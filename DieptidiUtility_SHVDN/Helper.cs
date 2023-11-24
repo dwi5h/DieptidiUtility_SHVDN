@@ -177,13 +177,22 @@ namespace DieptidiUtility_SHVDN
             Function.Call(Hash.SET_INTERIOR_ACTIVE, interiorId, true);
             Function.Call(Hash.DISABLE_INTERIOR, interiorId, false);
         }
+        public static int GetCurrentInteriorId()
+        {
+            var position = Game.Player.Character.Position;
+            return Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, position.X, position.Y, position.Z);
+        }
         public static uint GetCurrentRoomKey()
         {
             return Function.Call<uint>(Hash.GET_ROOM_KEY_FROM_ENTITY, Game.Player.Character);
         }
-        public static void RefreshCurrentRoom(int interiorId, int roomKey)
+        public static void RefreshCurrentRoom(int interiorId, uint roomKey)
         {
             Function.Call(Hash.FORCE_ROOM_FOR_ENTITY, Game.Player.Character, interiorId, roomKey);
+        }
+        public static void RefreshCurrentRoom(int interiorId, uint roomKey, Entity entity)
+        {
+            Function.Call(Hash.FORCE_ROOM_FOR_ENTITY, entity, interiorId, roomKey);
         }
         #endregion
     }
