@@ -195,5 +195,32 @@ namespace DieptidiUtility_SHVDN
             Function.Call(Hash.FORCE_ROOM_FOR_ENTITY, entity, interiorId, roomKey);
         }
         #endregion
+
+        #region Config
+        public static void SetConfigValue<T>(string configName, string section, string name, T value)
+        {
+            string _file = $"{configName}.ini";
+            string _path = $"{Directory.GetCurrentDirectory()}/scripts/{_file}";
+            if (!File.Exists(_path))
+            {
+                File.WriteAllText(_path, "");
+                var config = ScriptSettings.Load(_path);
+                config.SetValue(section, name, value);
+                config.Save();
+            }
+        }
+        public static T GetConfigValue<T>(string configName, string section, string name, T defaultvalue)
+        {
+            string _file = $"{configName}.ini";
+            string _path = $"{Directory.GetCurrentDirectory()}/scripts/{_file}";
+            if (File.Exists(_path))
+            {
+                var config = ScriptSettings.Load(_path);
+                return config.GetValue<T>(section, name, defaultvalue);
+            }
+
+            return defaultvalue;
+        }
+        #endregion
     }
 }
