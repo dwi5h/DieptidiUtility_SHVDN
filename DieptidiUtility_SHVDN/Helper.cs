@@ -152,20 +152,20 @@ namespace DieptidiUtility_SHVDN
 
             return Game.Player.Character.Heading;
         }
-        public static void ToggleEnableDoorOpen(uint hash, Vector3 position, bool isOpen)
+        public static void ToggleEnableDoorOpen(uint hash, Vector3 doorPosition, bool isOpen)
         {
             if (isOpen)
             {
                 Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
                     hash,
-                    position.X, position.Y, position.Z,
+                    doorPosition.X, doorPosition.Y, doorPosition.Z,
                     0);
             }
             else
             {
                 Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
                     hash,
-                    position.X, position.Y, position.Z,
+                    doorPosition.X, doorPosition.Y, doorPosition.Z,
                     1);
             }
         }
