@@ -33,17 +33,27 @@ namespace DieptidiUtility_SHVDN
 
             return new List<string>();
         }
+        public static List<string> LoadTextLinesFromLogTxt()
+        {
+            string _path = @"E:\PC\GTAV\log.txt";
+            if (File.Exists(_path))
+            {
+                return File.ReadAllLines(_path).ToList();
+            }
+
+            return new List<string>();
+        }
         public static void LoggingToLogTxt(string text)
         {
             string _path = @"E:\PC\GTAV\log.txt";
             File.WriteAllText(_path, text);
-            Notification.Show("Log Inputed");
+            Notification.Show("~g~Log ~w~Inputed");
         }
         public static void LoggingToLogTxt(string[] text)
         {
             string _path = @"E:\PC\GTAV\log.txt";
             File.WriteAllLines(_path, text);
-            Notification.Show("Log Inputed");
+            Notification.Show("~g~Log Lines ~w~Inputed");
         }
         #endregion
 
@@ -114,18 +124,6 @@ namespace DieptidiUtility_SHVDN
         #endregion
 
         #region Entity/Object/Blip
-        public static float HeadingToEntity(Entity entity1, Entity entity2)
-        {
-            var p1 = Function.Call<Vector3>(Hash.GET_ENTITY_COORDS, entity1, false);
-            var p2 = Function.Call<Vector3>(Hash.GET_ENTITY_COORDS, entity2, false);
-
-            float dx = p2.X - p1.X;
-            float dy = p2.Y - p1.Y;
-
-            return Function.Call<float>(Hash.GET_HEADING_FROM_VECTOR_2D, dx, dy);
-
-            return Game.Player.Character.Heading;
-        }
         public static Vehicle GetVehicleInFrontPlayer()
         {
             var frontPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0.5f, 0));
@@ -141,6 +139,18 @@ namespace DieptidiUtility_SHVDN
             var frontPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0.5f, 0));
             //return World.GetClosestVehicle(frontPosition, 1.5f);
             return World.GetClosestProp(frontPosition, 1.5f);
+        }
+        public static float HeadingToEntity(Entity entity1, Entity entity2)
+        {
+            var p1 = Function.Call<Vector3>(Hash.GET_ENTITY_COORDS, entity1, false);
+            var p2 = Function.Call<Vector3>(Hash.GET_ENTITY_COORDS, entity2, false);
+
+            float dx = p2.X - p1.X;
+            float dy = p2.Y - p1.Y;
+
+            return Function.Call<float>(Hash.GET_HEADING_FROM_VECTOR_2D, dx, dy);
+
+            return Game.Player.Character.Heading;
         }
         public static void ToggleEnableDoorOpen(uint hash, Vector3 position, bool isOpen)
         {
@@ -158,6 +168,22 @@ namespace DieptidiUtility_SHVDN
                     position.X, position.Y, position.Z,
                     1);
             }
+        }
+        #endregion
+
+        #region Interior
+        public static void ActivatingInterior(int interiorId)
+        {
+            Function.Call(Hash.SET_INTERIOR_ACTIVE, interiorId, true);
+            Function.Call(Hash.DISABLE_INTERIOR, interiorId, false);
+        }
+        public static uint GetCurrentRoomKey()
+        {
+            return Function.Call<uint>(Hash.GET_ROOM_KEY_FROM_ENTITY, Game.Player.Character);
+        }
+        public static void RefreshCurrentRoom(int interiorId, int roomKey)
+        {
+            Function.Call(Hash.FORCE_ROOM_FOR_ENTITY, Game.Player.Character, interiorId, roomKey);
         }
         #endregion
     }
