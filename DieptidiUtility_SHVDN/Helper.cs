@@ -9,12 +9,18 @@ using GTA.UI;
 using GTA.Math;
 using GTA.Native;
 using System.Drawing;
-
+using System.Globalization;
 
 namespace DieptidiUtility_SHVDN
 {
     public static class Helper
     {
+        #region Formatting
+        public static string DollarFormat(decimal price)
+        {
+            return price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
+        }
+        #endregion
 
         #region IO
         public static List<string> LoadTextLinesFromGTABaseFolder(string filePath)
@@ -26,6 +32,12 @@ namespace DieptidiUtility_SHVDN
             }
 
             return new List<string>();
+        }
+        public static void LogToLogTxt(string text)
+        {
+            string _path = @"E:\PC\GTAV\log.txt";
+            File.WriteAllText(_path, text);
+            Notification.Show("Log Inputed");
         }
         #endregion
 
@@ -86,6 +98,59 @@ namespace DieptidiUtility_SHVDN
             catch (Exception ex)
             {
                 Notification.Show("~r~Error: ~w~" + ex.Message);
+            }
+        }
+        public static void DrawMarkerFromDistance(Vector3 position, float distanceX = 0f, float distanceY = 0f, float distanceZ = 0f)
+        {
+            var newPosition = new Vector3(position.X + distanceX, position.Y + distanceY, position.Z + distanceZ);
+            World.DrawMarker(MarkerType.VerticalCylinder, newPosition, new Vector3(), new Vector3(), new Vector3(1, 1, 1), Color.Red);
+        }
+        #endregion
+
+        #region Entity/Object/Blip
+        public static float HeadingToEntity(Entity entity1, Entity entity2)
+        {
+            var p1 = Function.Call<Vector3>(Hash.GET_ENTITY_COORDS, entity1, false);
+            var p2 = Function.Call<Vector3>(Hash.GET_ENTITY_COORDS, entity2, false);
+
+            float dx = p2.X - p1.X;
+            float dy = p2.Y - p1.Y;
+
+            return Function.Call<float>(Hash.GET_HEADING_FROM_VECTOR_2D, dx, dy);
+
+            return Game.Player.Character.Heading;
+        }
+        public static Vehicle GetVehicleInFrontPlayer()
+        {
+            var frontPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0.5f, 0));
+            return World.GetClosestVehicle(frontPosition, 1.5f);
+        }
+        public static Vehicle[] GetNearbyVehiclesInFrontPlayer(float radius)
+        {
+            var frontPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0.5f, 0));
+            return World.GetNearbyVehicles(frontPosition, radius);
+        }
+        public static Entity GetEntityInFrontPlayer()
+        {
+            var frontPosition = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0.5f, 0));
+            //return World.GetClosestVehicle(frontPosition, 1.5f);
+            return World.GetClosestProp(frontPosition, 1.5f);
+        }
+        public static void ToggleEnableDoorOpen(uint hash, Vector3 position, bool isOpen)
+        {
+            if (isOpen)
+            {
+                Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
+                    hash,
+                    position.X, position.Y, position.Z,
+                    0);
+            }
+            else
+            {
+                Function.Call(Hash.SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
+                    hash,
+                    position.X, position.Y, position.Z,
+                    1);
             }
         }
         #endregion
