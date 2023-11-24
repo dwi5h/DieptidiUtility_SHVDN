@@ -33,10 +33,16 @@ namespace DieptidiUtility_SHVDN
 
             return new List<string>();
         }
-        public static void LogToLogTxt(string text)
+        public static void LoggingToLogTxt(string text)
         {
             string _path = @"E:\PC\GTAV\log.txt";
             File.WriteAllText(_path, text);
+            Notification.Show("Log Inputed");
+        }
+        public static void LoggingToLogTxt(string[] text)
+        {
+            string _path = @"E:\PC\GTAV\log.txt";
+            File.WriteAllLines(_path, text);
             Notification.Show("Log Inputed");
         }
         #endregion
