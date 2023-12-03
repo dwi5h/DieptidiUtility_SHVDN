@@ -208,6 +208,12 @@ namespace DieptidiUtility_SHVDN
                 config.SetValue(section, name, value);
                 config.Save();
             }
+            else if (!File.ReadAllText(_path).Contains(name))
+            {
+                var config = ScriptSettings.Load(_path);
+                config.SetValue(section, name, value);
+                config.Save();
+            }
         }
         public static T GetConfigValue<T>(string configName, string section, string name, T defaultvalue)
         {
